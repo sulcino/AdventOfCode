@@ -1,3 +1,4 @@
+use std::collections::HashMap;
 use std::fs::File;
 use std::io::{self, BufRead};
 use std::path::Path;
@@ -26,14 +27,30 @@ fn main() -> io::Result<()> {
     left_nums.sort();
     right_nums.sort();
 
-    let mut sum_of_differences = 0;
+    // --- part one ---
+    // let mut sum_of_differences = 0;
 
-    for (left, right) in left_nums.iter().zip(right_nums.iter()) {
-        let difference = (right - left).abs();
-        sum_of_differences += difference;
+    // for (left, right) in left_nums.iter().zip(right_nums.iter()) {
+    //     let difference = (right - left).abs();
+    //     sum_of_differences += difference;
+    // }
+
+    // println!("Sum of differences: {}", sum_of_differences);
+
+    // --- part two ---
+    let mut counts: HashMap<i32, i32> = HashMap::new();
+    for &num in right_nums.iter() {
+        *counts.entry(num).or_insert(0) += 1;
     }
 
-    println!("Sum of differences: {}", sum_of_differences);
+    let mut score = 0;
+    for &num in left_nums.iter() {
+        let count = counts.get(&num).cloned().unwrap_or(0);
+        score += count * num;
+    }
+
+    println!("Similarity score: {}", score);
+    // ----------------
 
     Ok(())
 }
